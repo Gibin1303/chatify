@@ -53,17 +53,57 @@ export const signup = async (req, res) => {
         },
       });
       try {
-        await sendWelcomeEmail(savedUser.email, savedUser.fullName, ENV.CLIENT_URL);
-      }catch (error) {
+        await sendWelcomeEmail(
+          savedUser.email,
+          savedUser.fullName,
+          ENV.CLIENT_URL
+        );
+      } catch (error) {
         console.error("Error sending welcome email:", error);
         throw new Error("Failed to send welcome email");
       }
-    }else{
+    } else {
       res.status(400).json({ message: "Invalid user data" });
     }
-}
-  
- catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
+};
+
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+      // never tell the user which one is incorrect for security reasons
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    generateToken(user._id, res);
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        profilePic: user.profilePic,
+      },
+    });
+  } catch (error) {
+    console.log("Login error:", error);
+    res.status(500).json({ message: "Internal Server error" });
+  }
+};
+
+export const logout = (_, res) => {
+  res.cookie("jwt", "", {
+    maxAge: 0,
+  });
+  res.status(200).json({ message: "Logout successfully" });
 };
