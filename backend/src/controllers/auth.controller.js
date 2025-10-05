@@ -1,9 +1,12 @@
 import { generateToken } from "../lib/util.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import "dotenv/config";
+import { sendWelcomeEmail } from "../emails/emailHandlers.js";
+import { ENV } from "../lib/env.js";
 
 export const signup = async (req, res) => {
-  const { fullName, email, password, profilePic} = req.body;
+  const { fullName, email, password, profilePic } = req.body;
 
   try {
     if (!fullName || !email || !password) {
@@ -32,7 +35,7 @@ export const signup = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
-      profilePic
+      profilePic,
     });
 
     if (newUser) {
@@ -46,14 +49,21 @@ export const signup = async (req, res) => {
           id: newUser._id,
           fullName: newUser.fullName,
           email: newUser.email,
-         profilePic: newUser.profilePic,
+          profilePic: newUser.profilePic,
         },
       });
-    } else {
-      res.status(400).json({ message: "Inavalid username" });
+      try {
+        await sendWelcomeEmail(savedUser.email, savedUser.fullName, ENV.CLIENT_URL);
+      }catch (error) {
+        console.error("Error sending welcome email:", error);
+        throw new Error("Failed to send welcome email");
+      }
+    }else{
+      res.status(400).json({ message: "Invalid user data" });
     }
-  } catch (error) {
-    console.log(error);
+}
+  
+ catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
