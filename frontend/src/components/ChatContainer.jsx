@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ChatContainer = () => {
+const chatContainer = () => {
   return (
-    <div>ChatContainer</div>
+    <div>chatContainer</div>
   )
 }
 
-export default ChatContainer
+export default chatContainer
