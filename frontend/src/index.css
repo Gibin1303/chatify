@@ -42,3 +42,7 @@
 .auth-link:hover{
     @apply bg-cyan-400/20
 }
+
+div{
+    @apply text-white;
+}
