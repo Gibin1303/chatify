@@ -61,8 +61,6 @@ export const signup = async (req, res) => {
         );
       } catch (error) {
         console.error("Error sending welcome email:", error);
-        // throw new Error("Failed to send welcome email");
-        res.status(500).json({ message: "Failed to send welcome email" });
       }
     } else {
       res.status(400).json({ message: "Invalid user data" });
