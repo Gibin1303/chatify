@@ -26,7 +26,7 @@ const Chatlist = () => {
             {/* todo: get real time updation via socket io */}
             <div className={`avatar online`}>
               <div className="size-12 rounded-full">
-                <img src={chat.profilePic || "/avatar.jpg"} className="text-white text-xs" alt="No image" />
+                <img src={chat.profilePic || "/avatar.png"} className="text-white text-xs" alt="No imag" />
               </div>
             </div>
             <h4 className="font-medium truncate text-white">{chat.fullName}</h4>

@@ -21,7 +21,7 @@ export const getMessagesByUserId = async (req, res) => {
     const { id: userToChatId } = req.params;
 
     // get me and user chats
-    // i send the message
+    // i send the message 
     // user send the message
 
     const messages = await Message.find({
