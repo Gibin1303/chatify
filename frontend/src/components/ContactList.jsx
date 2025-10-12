@@ -26,7 +26,7 @@ const ContactList = () => {
             {/* todo: get real time updation via socket io */}
             <div className={`avatar online`}>
               <div className="size-12 rounded-full">
-                <img src={contact.profilePic || "/avatar.jpg"} alt="" />
+                <img src={contact.profilePic || "/avatar.png"} alt="" />
               </div>
             </div>
             <h4 className="font-medium truncate text-white">{contact.fullName}</h4>

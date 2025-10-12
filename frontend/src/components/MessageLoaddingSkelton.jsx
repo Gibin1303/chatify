@@ -1,0 +1,15 @@
+import React from 'react'
+
+const MessageLoaddingSkelton = () => {
+  return (
+    <div className='max-w-3xl mx-auto space-y-6'>
+           {[...Array(6)].map((_,index)=>(
+            <div className={`${index%2===0?"chat-start":"chat-end"} animate-pulse`}>
+                <div className='chat-bubble  bg-slate-800 text-white w-32'></div>
+            </div>
+           ))}
+    </div>
+  )
+}
+
+export default MessageLoaddingSkelton
