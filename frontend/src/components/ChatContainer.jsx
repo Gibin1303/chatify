@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import ChatHeader from "./ChatHeader";
@@ -7,19 +7,52 @@ import MessageInput from "./MessageInput";
 import MessageLoaddingSkelton from "./MessageLoaddingSkelton";
 
 const ChatContainer = () => {
-  const { selectedUser, messages, getMessagesbyUserId, isMessagesLoading } = useChatStore();
+  const { selectedUser, messages, getMessagesbyUserId, isMessagesLoading,scrollToBottom,setScrollToBottom } =
+    useChatStore();
   const { authuser } = useAuthStore();
 
   useEffect(() => {
     getMessagesbyUserId(selectedUser?._id);
   }, [selectedUser, getMessagesbyUserId]);
 
-  console.log(messages, "hello getmessagebyId api");
+  // const setScrollToBottom = useChatStore((s) => s.setScrollToBottom);
+
+  //   const containerRef = useRef(null);
+
+  // const scrollToBottomHandler = (behavior = "smooth") => {
+  //   const container = containerRef.current;
+  //   if (!container) return;
+
+  //   const offset = 20;
+  //   const target = container.scrollHeight - container.clientHeight - offset;
+
+  //   container.scrollTo({
+  //     top: target > 0 ? target : 0,
+  //     behavior,
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   setScrollToBottom(() => scrollToBottomHandler);
+  // }, [setScrollToBottom]);
+
+
+  // useEffect(() => {
+  //   requestAnimationFrame(() => scrollToBottomHandler("smooth"));
+  // }, [messages]);
+
+  const messageEndRef = useRef(null)
+
+  useEffect(()=>{
+    if(messageEndRef.current){
+      messageEndRef.current.scrollIntoView({behavior:"smooth"})
+    }
+  },[messages])
 
   return (
     <>
       <ChatHeader />
-      <div className="flex-1 px-6 overflow-y-auto py-8">
+      <div  className="flex-1 px-6 overflow-y-auto py-8">
         {messages?.length > 0 && !isMessagesLoading ? (
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.map((msg) => (
@@ -54,10 +87,12 @@ const ChatContainer = () => {
                 </div>
               </div>
             ))}
+                  <div ref={messageEndRef}/>
+
           </div>
-        ) : isMessagesLoading ? 
+        ) : isMessagesLoading ? (
           <MessageLoaddingSkelton />
-         : (
+        ) : (
           <NoChatHistoryPlaceHolder name={selectedUser.fullName} />
         )}
       </div>
