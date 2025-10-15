@@ -7,13 +7,31 @@ import MessageInput from "./MessageInput";
 import MessageLoaddingSkelton from "./MessageLoaddingSkelton";
 
 const ChatContainer = () => {
-  const { selectedUser, messages, getMessagesbyUserId, isMessagesLoading,scrollToBottom,setScrollToBottom } =
-    useChatStore();
+  const {
+    selectedUser,
+    messages,
+    getMessagesbyUserId,
+    isMessagesLoading,
+    subscribeTomessage,
+    unSuscribeFromMessages,
+  } = useChatStore();
   const { authuser } = useAuthStore();
 
   useEffect(() => {
+    if(!selectedUser._id)  return
     getMessagesbyUserId(selectedUser?._id);
-  }, [selectedUser, getMessagesbyUserId]);
+    subscribeTomessage();
+
+    //cleanup
+    return () => {
+      unSuscribeFromMessages();
+    };
+  }, [
+    selectedUser,
+    getMessagesbyUserId,
+    subscribeTomessage,
+    unSuscribeFromMessages,
+  ]);
 
   // const setScrollToBottom = useChatStore((s) => s.setScrollToBottom);
 
@@ -36,23 +54,22 @@ const ChatContainer = () => {
   //   setScrollToBottom(() => scrollToBottomHandler);
   // }, [setScrollToBottom]);
 
-
   // useEffect(() => {
   //   requestAnimationFrame(() => scrollToBottomHandler("smooth"));
   // }, [messages]);
 
-  const messageEndRef = useRef(null)
+  const messageEndRef = useRef(null);
 
-  useEffect(()=>{
-    if(messageEndRef.current){
-      messageEndRef.current.scrollIntoView({behavior:"smooth"})
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  },[messages])
+  }, [messages]);
 
   return (
     <>
       <ChatHeader />
-      <div  className="flex-1 px-6 overflow-y-auto py-8">
+      <div className="flex-1 px-6 overflow-y-auto py-8">
         {messages?.length > 0 && !isMessagesLoading ? (
           <div className="max-w-3xl mx-auto space-y-6">
             {messages.map((msg) => (
@@ -87,8 +104,7 @@ const ChatContainer = () => {
                 </div>
               </div>
             ))}
-                  <div ref={messageEndRef}/>
-
+            <div ref={messageEndRef} />
           </div>
         ) : isMessagesLoading ? (
           <MessageLoaddingSkelton />
