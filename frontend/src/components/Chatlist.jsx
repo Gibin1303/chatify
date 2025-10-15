@@ -2,10 +2,13 @@ import React, { useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 import UsersLoadingSkelton from "./UsersLoadingSkelton";
 import NochatsFound from "./NochatsFound";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Chatlist = () => {
   const { getAllChatsPartners, chats, isUsersLoading, setSelectedUser } =
     useChatStore();
+
+    const {onlineUsers}=useAuthStore()
 
   useEffect(() => {
     getAllChatsPartners();
@@ -13,6 +16,7 @@ const Chatlist = () => {
 
   if (isUsersLoading) return <UsersLoadingSkelton />;
   if (chats.length === 0) return <NochatsFound />;
+
 
   return (
     <>
@@ -23,8 +27,7 @@ const Chatlist = () => {
           onClick={() => setSelectedUser(chat)}
         >
           <div className="flex items-center gap-3">
-            {/* todo: get real time updation via socket io */}
-            <div className={`avatar online`}>
+            <div className={`avatar  ${onlineUsers.includes(chat._id)?"online":"offline"}`}>
               <div className="size-12 rounded-full">
                 <img src={chat.profilePic || "/avatar.png"} className="text-white text-xs" alt="No imag" />
               </div>
