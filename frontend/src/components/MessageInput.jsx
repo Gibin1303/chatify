@@ -11,6 +11,11 @@ const MessageInput = () => {
   const fileInputRef = useRef(null);
 
   const { isSoundEnabled, sendMessage } = useChatStore();
+     
+
+
+
+
   const handleMessage = (e) => {
     e.preventDefault();
     if (!text.trim() && !imagePreview) return;
